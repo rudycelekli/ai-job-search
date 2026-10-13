@@ -15,6 +15,14 @@ per-file diff commands.
 
 ### Fixed
 
+- **`/rank` retires scored jobs whose preserved deadline has passed**
+  (`tools/rank_state.py`, `tests/test_rank_state.py`) - a fresh `null` deadline
+  preserves the stored date, but `apply` previously wrote the job as `ranked`
+  even after that date had passed. The later sweep excludes re-scored keys,
+  so it could not correct the state or shortlist. Apply now expires the job
+  before changing rank metadata; current-day deadlines, explicit future
+  extensions, invalid dates, dry runs, and scoring errors keep their behavior.
+
 - **`/reset profile` now targets the headings the shipped skill files actually have**
   (`.claude/commands/reset.md` Step 3, `tests/test_reset_command.py`) - two of its Step 3
   targets had drifted. The `05-cv-templates.md` step anchored on a section beginning
