@@ -1,0 +1,179 @@
+name: Frozen deadline native qualification
+on:
+  workflow_dispatch:
+  push:
+    branches: [qualification/deadline-native-20261013]
+permissions:
+  contents: read
+jobs:
+  native:
+    if: github.repository == 'rudycelekli/ai-job-search' && github.event.repository.fork == true && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container || null }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - phase: "baseline"
+            lane: "python-3.10"
+            python: "3.10"
+            container: ""
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "baseline"
+            lane: "python-3.11"
+            python: "3.11"
+            container: ""
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "baseline"
+            lane: "python-3.12"
+            python: "3.12"
+            container: ""
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "baseline"
+            lane: "python-3.13"
+            python: "3.13"
+            container: ""
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "baseline"
+            lane: "python-3.14"
+            python: "3.14"
+            container: ""
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "baseline"
+            lane: "guards"
+            python: "3.12"
+            container: ""
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "baseline"
+            lane: "bun"
+            python: "3.12"
+            container: ""
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "baseline"
+            lane: "latex-latest"
+            python: "3.12"
+            container: "texlive/texlive@sha256:acd65bd2c60671fe1537e35440b5d6374ccdcbe3e7fa8a8d7a285fc045c78ed4"
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "baseline"
+            lane: "latex-bookworm"
+            python: "3.12"
+            container: "library/debian@sha256:bc49dc1918ee1a47a93e65b5e4676e8680fb754b133197b92ca52bfe6731d5f0"
+            source: "a011214d60f943770e33f7d5f070e1a5f91e3822"
+          - phase: "fixed"
+            lane: "python-3.10"
+            python: "3.10"
+            container: ""
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+          - phase: "fixed"
+            lane: "python-3.11"
+            python: "3.11"
+            container: ""
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+          - phase: "fixed"
+            lane: "python-3.12"
+            python: "3.12"
+            container: ""
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+          - phase: "fixed"
+            lane: "python-3.13"
+            python: "3.13"
+            container: ""
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+          - phase: "fixed"
+            lane: "python-3.14"
+            python: "3.14"
+            container: ""
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+          - phase: "fixed"
+            lane: "guards"
+            python: "3.12"
+            container: ""
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+          - phase: "fixed"
+            lane: "bun"
+            python: "3.12"
+            container: ""
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+          - phase: "fixed"
+            lane: "latex-latest"
+            python: "3.12"
+            container: "texlive/texlive@sha256:acd65bd2c60671fe1537e35440b5d6374ccdcbe3e7fa8a8d7a285fc045c78ed4"
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+          - phase: "fixed"
+            lane: "latex-bookworm"
+            python: "3.12"
+            container: "library/debian@sha256:bc49dc1918ee1a47a93e65b5e4676e8680fb754b133197b92ca52bfe6731d5f0"
+            source: "91c19f64664e48b0f7409ea226211f59c6944578"
+    env:
+      QUALIFICATION_CONTAINER: ${{ matrix.container }}
+    steps:
+      - name: Container Python and Git prerequisites
+        if: matrix.container != ''
+        shell: sh
+        run: |
+          mkdir -p 'proof/${{ matrix.lane }}-${{ matrix.phase }}'
+          (
+            set -eu
+            date -u '+%Y-%m-%dT%H:%M:%SZ'
+            if ! command -v python3 >/dev/null || ! command -v git >/dev/null; then
+              apt-get update
+              apt-get install -y --no-install-recommends python3 git ca-certificates
+            fi
+            python3 --version
+            git --version
+            date -u '+%Y-%m-%dT%H:%M:%SZ'
+            printf '%s\n' CONTAINER_BOOTSTRAP_PASS
+          ) > 'proof/${{ matrix.lane }}-${{ matrix.phase }}/container-bootstrap.log' 2>&1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ github.sha }}
+          path: harness
+          fetch-depth: 0
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ matrix.source }}
+          path: source
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        if: matrix.container == ''
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        if: matrix.lane == 'bun'
+      - name: Frozen native checks
+        run: python3 harness/qualification/native.py --source source --phase '${{ matrix.phase }}' --lane '${{ matrix.lane }}' --proof 'proof/${{ matrix.lane }}-${{ matrix.phase }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ${{ matrix.lane }}-${{ matrix.phase }}
+          path: proof/
+          retention-days: 1
+          compression-level: 9
+  compare:
+    if: always() && github.repository == 'rudycelekli/ai-job-search' && github.event.repository.fork == true && github.event.repository.private == false
+    needs: native
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ github.sha }}
+          path: harness
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          path: raw
+          merge-multiple: true
+      - name: Evaluator controls
+        run: python3 -m unittest discover -s harness/qualification -p test_compare.py -v
+      - name: Strict actual native comparison
+        run: python3 harness/qualification/compare.py raw --output comparison.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: comparison
+          path: comparison.json
+          retention-days: 1
+          compression-level: 9

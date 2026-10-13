@@ -1,0 +1,311 @@
+{
+  "recorded_at": "2026-10-13T16:09:40.251098+00:00",
+  "base": "a011214d60f943770e33f7d5f070e1a5f91e3822",
+  "head": "91c19f64664e48b0f7409ea226211f59c6944578",
+  "tree": "bf30a72afc6b4467c8d02a3868dbb35af0d213ae",
+  "parent": "a011214d60f943770e33f7d5f070e1a5f91e3822",
+  "branch": "fix/rank-expire-preserved-deadlines",
+  "files": {
+    "tools/rank_state.py": "dcd3870330f2f0f6a22b3b1b7a08c543272199783c00c5910ee66a326cc113e2",
+    "tests/test_rank_state.py": "c5e944c8814eba9de9d323b29d707a0265969265b930051d1905b569d78cd602",
+    "CHANGELOG.md": "6e80ec4a5127917357889ea14fbc6981e8511a970d9e4ab529afd9858785ded6"
+  },
+  "patch_sha256": "749417372f019e0149f71acf877ccc83214d7bd3c79095e50a184a8acf2d34ee",
+  "original_function_AST_unchanged": 35,
+  "new_methods": [
+    "test_deadline_apply_boundaries_and_dry_run_keep_existing_semantics",
+    "test_past_deadline_does_not_bypass_scoring_errors",
+    "test_scored_keys_keep_past_deadlines_out_of_the_shortlist"
+  ],
+  "local_owning": {
+    "pristine_original": 29,
+    "baseline_with_literal_fixture": {
+      "methods": 32,
+      "failures": 4,
+      "failing_new_methods": 2
+    },
+    "fixed_pass": 32
+  },
+  "full_local_fixed": {
+    "runtime": "Anaconda Python3.13.5",
+    "tests": 450,
+    "errors": 3,
+    "failures": 1,
+    "baseline_inheritance": "UNKNOWN; pristine full baseline not run",
+    "status": "FAIL preserved"
+  },
+  "publication": "PRIVATE LOCAL ONLY; no fork/push/PR",
+  "canonical_qualification": "PENDING; below disk floor; hosted packet pending independent review",
+  "commit_rule": {
+    "CONTRIBUTING_line": 37,
+    "text": "Run what CI runs: ...",
+    "explicit_before_ANY_commit": false,
+    "interpretation": "Required PR review validation; no exception to canonical gates before PR"
+  },
+  "contract_primary": "Valid scored/null result preserves stored past deadline; sweep excludes rescored key",
+  "proofs": [
+    "deadline-replay/contract-schema-proof.json",
+    "deadline-replay/contract-valid-replay/baseline-caller-proof.json",
+    "owning-baseline-pristine.stderr",
+    "owning-baseline-with-regressions.stderr",
+    "owning-fixed.stderr",
+    "full-fixed-python313.stderr"
+  ],
+  "original_function_AST_unchanged_scope": "tests/test_rank_state.py only; production apply function intentionally changed",
+  "workflow_sha256": "a796433276810e7706de822c3194ff666bc481f85262f085f45bb97b3794e193",
+  "test_fixture_sha256": "c5e944c8814eba9de9d323b29d707a0265969265b930051d1905b569d78cd602",
+  "helpers": [
+    "manifest.json",
+    "native.py",
+    "compare.py",
+    "sitecustomize.py",
+    "regression-fixture.py",
+    "test_compare.py",
+    "network_namespace.py"
+  ],
+  "qualification_workflow": ".github/workflows/deadline-native.yml",
+  "baseline_files": {
+    "tools/rank_state.py": "e07c523a07e609bb6e3c33a0046f9e1f3f9a2f3745a15a33e0f546a5ed07ee99",
+    "tests/test_rank_state.py": "9db3a734a9da0a00bd64cacca7cffb011c135503edd2a04a58b9f776dc85d903",
+    "CHANGELOG.md": "c0f96f0ba9672254f7624b334f4d6a4f81e9c9ded721305c813149dd6fa531bf"
+  },
+  "expected_baseline_failure_subtests": [
+    "tests.test_rank_state.Apply.test_scored_keys_keep_past_deadlines_out_of_the_shortlist (status='new')",
+    "tests.test_rank_state.Apply.test_scored_keys_keep_past_deadlines_out_of_the_shortlist (status='ranked')",
+    "tests.test_rank_state.Apply.test_scored_keys_keep_past_deadlines_out_of_the_shortlist (status='expired')",
+    "tests.test_rank_state.Apply.test_deadline_apply_boundaries_and_dry_run_keep_existing_semantics (stored='2026-09-02', fresh=None, status='scored')"
+  ],
+  "bun_clis": [
+    {
+      "directory": ".agents/skills/freehire-search/cli",
+      "tests": true
+    },
+    {
+      "directory": ".agents/skills/jobbank-search/cli",
+      "tests": true
+    },
+    {
+      "directory": ".agents/skills/jobdanmark-search/cli",
+      "tests": true
+    },
+    {
+      "directory": ".agents/skills/jobindex-search/cli",
+      "tests": true
+    },
+    {
+      "directory": ".agents/skills/jobnet-search/cli",
+      "tests": true
+    },
+    {
+      "directory": ".agents/skills/linkedin-search/cli",
+      "tests": true
+    }
+  ],
+  "containers": {
+    "latex-latest": "texlive/texlive@sha256:acd65bd2c60671fe1537e35440b5d6374ccdcbe3e7fa8a8d7a285fc045c78ed4",
+    "latex-bookworm": "library/debian@sha256:bc49dc1918ee1a47a93e65b5e4676e8680fb754b133197b92ca52bfe6731d5f0"
+  },
+  "placeholder_script": "fail=0\ncheck() {\n  if ! grep -q \"$2\" \"$1\"; then\n    echo \"::error file=$1::expected placeholder token $2 - personal data may have been committed\"\n    fail=1\n  fi\n}\ncheck CLAUDE.md '\\[YOUR_NAME\\]'\ncheck cv/main_example.tex '\\\\name{\\[First\\]}{\\[Last\\]}'\ncheck cv/main_example.tex '\\\\email{\\[your\\.email@example\\.com\\]}'\ncheck cover_letters/cover_example.tex '\\[YOUR NAME\\]'\ncheck .claude/skills/job-application-assistant/01-candidate-profile.md '\\[YOUR_EMAIL\\]'\ncheck .claude/skills/job-application-assistant/04-job-evaluation.md '\\[YOUR_PRIMARY_SKILLS\\]'\nexit $fail",
+  "command_labels": {
+    "python-3.10": {
+      "baseline": [
+        "runtime",
+        "dependencies",
+        "original",
+        "baseline-regressions"
+      ],
+      "fixed": [
+        "runtime",
+        "dependencies",
+        "fixed"
+      ]
+    },
+    "python-3.11": {
+      "baseline": [
+        "runtime",
+        "dependencies",
+        "original",
+        "baseline-regressions"
+      ],
+      "fixed": [
+        "runtime",
+        "dependencies",
+        "fixed"
+      ]
+    },
+    "python-3.12": {
+      "baseline": [
+        "runtime",
+        "dependencies",
+        "original",
+        "baseline-regressions"
+      ],
+      "fixed": [
+        "runtime",
+        "dependencies",
+        "fixed"
+      ]
+    },
+    "python-3.13": {
+      "baseline": [
+        "runtime",
+        "dependencies",
+        "original",
+        "baseline-regressions"
+      ],
+      "fixed": [
+        "runtime",
+        "dependencies",
+        "fixed"
+      ]
+    },
+    "python-3.14": {
+      "baseline": [
+        "runtime",
+        "dependencies",
+        "original",
+        "baseline-regressions"
+      ],
+      "fixed": [
+        "runtime",
+        "dependencies",
+        "fixed"
+      ]
+    },
+    "guards": {
+      "baseline": [
+        "runtime",
+        "dependencies",
+        "bind-base",
+        "lint_skills",
+        "check_framework_version",
+        "security_guards",
+        "placeholders"
+      ],
+      "fixed": [
+        "runtime",
+        "dependencies",
+        "bind-base",
+        "lint_skills",
+        "check_framework_version",
+        "security_guards",
+        "placeholders"
+      ]
+    },
+    "bun": {
+      "baseline": [
+        "runtime",
+        "bun-runtime",
+        "bun-install-0",
+        "bun-typecheck-0",
+        "bun-test-0",
+        "bun-install-1",
+        "bun-typecheck-1",
+        "bun-test-1",
+        "bun-install-2",
+        "bun-typecheck-2",
+        "bun-test-2",
+        "bun-install-3",
+        "bun-typecheck-3",
+        "bun-test-3",
+        "bun-install-4",
+        "bun-typecheck-4",
+        "bun-test-4",
+        "bun-install-5",
+        "bun-typecheck-5",
+        "bun-test-5"
+      ],
+      "fixed": [
+        "runtime",
+        "bun-runtime",
+        "bun-install-0",
+        "bun-typecheck-0",
+        "bun-test-0",
+        "bun-install-1",
+        "bun-typecheck-1",
+        "bun-test-1",
+        "bun-install-2",
+        "bun-typecheck-2",
+        "bun-test-2",
+        "bun-install-3",
+        "bun-typecheck-3",
+        "bun-test-3",
+        "bun-install-4",
+        "bun-typecheck-4",
+        "bun-test-4",
+        "bun-install-5",
+        "bun-typecheck-5",
+        "bun-test-5"
+      ]
+    },
+    "latex-latest": {
+      "baseline": [
+        "runtime",
+        "pdf-tools",
+        "lualatex-version",
+        "xelatex-version",
+        "pdfinfo-version",
+        "pdftotext-version",
+        "compile-main_example",
+        "extract-main_example",
+        "compile-cover_example",
+        "extract-cover_example",
+        "cv-stock",
+        "cover-stock"
+      ],
+      "fixed": [
+        "runtime",
+        "pdf-tools",
+        "lualatex-version",
+        "xelatex-version",
+        "pdfinfo-version",
+        "pdftotext-version",
+        "compile-main_example",
+        "extract-main_example",
+        "compile-cover_example",
+        "extract-cover_example",
+        "cv-stock",
+        "cover-stock"
+      ]
+    },
+    "latex-bookworm": {
+      "baseline": [
+        "runtime",
+        "apt-update",
+        "apt-install",
+        "lualatex-version",
+        "xelatex-version",
+        "pdfinfo-version",
+        "pdftotext-version",
+        "compile-main_example",
+        "extract-main_example",
+        "compile-cover_example",
+        "extract-cover_example",
+        "cv-stock",
+        "cover-stock"
+      ],
+      "fixed": [
+        "runtime",
+        "apt-update",
+        "apt-install",
+        "lualatex-version",
+        "xelatex-version",
+        "pdfinfo-version",
+        "pdftotext-version",
+        "compile-main_example",
+        "extract-main_example",
+        "compile-cover_example",
+        "extract-cover_example",
+        "cv-stock",
+        "cover-stock"
+      ]
+    }
+  },
+  "network_contract": {
+    "all_six_Bun_suites": "sudo -n --preserve-env=PATH unshare --net; namespace helper ->canonical bun test",
+    "original_tests": "unchanged; no skip, omission, production mock or response substitution",
+    "positive": "loopback literal socket exchange",
+    "negative": "RFC5737 203.0.113.1:443 must return kernel ENETUNREACH; only loopback links/routes",
+    "qualification_claim": "offline flag-validation/fixture outcomes only; no portalavailability claim"
+  }
+}
